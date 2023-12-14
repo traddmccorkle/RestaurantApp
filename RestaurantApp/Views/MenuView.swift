@@ -14,22 +14,23 @@ struct MenuView: View {
     @State private var searchText: String = ""
     
     var body: some View {
-        VStack {
+        VStack(spacing: 0) {
             Image("Logo")
+                .padding(.bottom)
             
             HeroView()
-            
-            HStack {
-                Image(systemName: "magnifyingglass")
-                TextField("Search the menu", text: $searchText)
-            }
-            .frame(maxWidth: 350)
             
             FetchedObjects(
                 predicate:buildPredicate(),
                 sortDescriptors: buildSortDescriptors()) {
                 (dishes: [Dish]) in
                 List {
+                    HStack {
+                        Image(systemName: "magnifyingglass")
+                        TextField("Search the menu", text: $searchText)
+                            .textFieldStyle(.roundedBorder)
+                    }
+                    
                     ForEach(dishes, id:\.self) { dish in
                         HStack {
                             VStack(alignment: .leading) {
