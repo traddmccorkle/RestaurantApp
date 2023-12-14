@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct Onboarding: View {
+struct OnboardingView: View {
     @State private var isLoggedIn = false
     @State private var firstName = ""
     @State private var lastName = ""
@@ -18,16 +18,35 @@ struct Onboarding: View {
     let kEmail = "email key"
     
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
-                NavigationLink(destination: Home(), isActive: $isLoggedIn) {
-                    Home()
+                NavigationLink(destination: HomeView(), isActive: $isLoggedIn) {
+                    EmptyView()
                 }
+                Image("Logo")
                 
-                TextField("First Name", text: $firstName)
-                TextField("Last Name", text: $lastName)
-                TextField("E-mail Address", text: $email)
+                HeroView()
                 
+                // registration form
+                VStack {
+                    Text("First Name *")
+                        .font(.caption)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    TextField(firstName, text: $firstName)
+                    Text("Last Name *")
+                        .font(.caption)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    TextField(lastName, text: $lastName)
+                    Text("E-mail Address *")
+                        .font(.caption)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                    TextField(email, text: $email)
+                }
+                .foregroundColor(.secondary)
+                .frame(maxWidth: 350)
+                .textFieldStyle(.roundedBorder)
+                
+                // registration button that validates form entries 
                 Button(action: {
                     if !firstName.isEmpty && !lastName.isEmpty && !email.isEmpty {
                         // Additional check for a valid email
@@ -53,7 +72,13 @@ struct Onboarding: View {
                 }, label: {
                     Text("Register")
                 })
+                .padding(.top)
+                .tint(.accentGreen)
+                .shadow(radius: 3)
+                .buttonStyle(.borderedProminent)
                 // add an alert if any fields aren't handled correctly
+                
+                Spacer()
             }
         }
         .onAppear {
@@ -79,5 +104,5 @@ struct Onboarding: View {
 }
 
 #Preview {
-    Onboarding()
+    OnboardingView()
 }

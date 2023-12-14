@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct RestaurantApp: App {
+    let persistence = PersistenceController.shared
+    
     var body: some Scene {
         WindowGroup {
-            Onboarding()
+            OnboardingView()
         }
     }
 }
