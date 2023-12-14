@@ -9,7 +9,7 @@ import SwiftUI
 
 struct ItemDetailsView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    let dish: Dish
+    @ObservedObject var dish: Dish
     
     var body: some View {
         VStack {

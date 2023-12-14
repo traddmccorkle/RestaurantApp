@@ -10,17 +10,18 @@ import CoreData
 
 struct MenuView: View {
     @Environment(\.managedObjectContext) private var viewContext
-    var persistence = PersistenceController()
+    
     @State private var searchText: String = ""
     @State private var startersShown = true
     @State private var mainsShown = true
     @State private var dessertsShown = true
     @State private var drinksShown = true
+    @State private var menuItemsLoaded = false
     
     var body: some View {
-        NavigationView {
+        NavigationStack() {
             VStack(spacing: 0) {
-                Image("Logo")
+                HeaderView()
                     .padding(.bottom)
                 
                 VStack() {
@@ -54,59 +55,29 @@ struct MenuView: View {
                     predicate:buildPredicate(),
                     sortDescriptors: buildSortDescriptors()) {
                         (dishes: [Dish]) in
-                        List {
-                            ForEach(dishes, id:\.self) { dish in
-                                NavigationLink(destination: ItemDetailsView(dish: dish)) {
-                                    HStack {
-                                        VStack(alignment: .leading) {
-                                            Text(dish.title ?? "")
-                                                .font(
-                                                    .custom(
-                                                        "Cochin",
-                                                        fixedSize: 20)
-                                                    .weight(.black)
-                                                    
-                                                )
-                                            Text(dish.summary ?? "")
-                                                .font(
-                                                    .custom(
-                                                        "Cochin",
-                                                        fixedSize: 15)
-                                                    
-                                                )
-                                                .lineLimit(2)
-                                                .foregroundColor(.accentGreen)
-                                            Text("$\(dish.price ?? "")")
-                                                .font(
-                                                    .custom(
-                                                        "Cochin",
-                                                        fixedSize: 20)
-                                                    .weight(.black)
-                                                    
-                                                )
-                                                .foregroundColor(.accentGreen)
-                                        }
-                                        Spacer()
-                                        if let imageUrl = URL(string: dish.image ?? "") {
-                                            AsyncImage(url: imageUrl) { image in
-                                                image.resizable()
-                                            } placeholder: {
-                                                Color.gray
-                                            }
-                                            .frame(width: 50, height: 50)
-                                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        }
-                                    }
-                                }
+                        List(dishes) { dish in
+                            NavigationLink(destination: ItemDetailsView(dish: dish)) {
+                                FoodItemView(dish: dish)
                             }
                         }
                         .listStyle(.plain)
                     }
             }
+            .navigationBarBackButtonHidden()
             .task {
-                await reload(viewContext)
+                // temporary fix for duplicate menu items appearing on refresh
+                if !menuItemsLoaded {
+                    await MenuList.getMenuData(viewContext: viewContext)
+                    menuItemsLoaded = true
+                }
             }
         }
+    }
+    
+    func buildSortDescriptors() -> [NSSortDescriptor] {
+        return   [NSSortDescriptor(key: "title",
+                                   ascending: true,
+                                   selector: #selector(NSString.localizedCompare))]
     }
     
     func buildPredicate() -> NSCompoundPredicate {
@@ -118,43 +89,6 @@ struct MenuView: View {
         
         let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [search, starters, mains, desserts, drinks])
         return compoundPredicate
-    }
-    
-    func buildSortDescriptors() -> [NSSortDescriptor] {
-        return   [NSSortDescriptor(key: "title",
-                                   ascending: true,
-                                   selector: #selector(NSString.localizedCompare))]
-    }
-    
-    func reload(_ coreDataContext:NSManagedObjectContext) async {
-        let url = URL(string: "https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json")!
-        let urlSession = URLSession.shared
-        
-        // Clears existing Dish data before fetching and storing new data
-        persistence.clear()
-        
-        do {
-            let (data, _) = try await urlSession.data(from: url)
-            print("Attempting to decode JSON response...")
-            let fullMenu = try JSONDecoder().decode(MenuList.self, from: data)
-            fullMenu.menu.forEach { menuItem in
-                let dish = Dish(context: viewContext)
-                dish.title = menuItem.title
-                dish.price = menuItem.price
-                dish.image = menuItem.image
-                dish.summary = menuItem.description
-                dish.category = menuItem.category
-                
-            }
-            try? viewContext.save()
-            
-            // populate Core Data
-            //            Dish.deleteAll(coreDataContext)
-            //            Dish.createDishesFrom(menuItems:menuItems, coreDataContext)
-        }
-        catch {
-            print(error)
-        }
     }
 }
 

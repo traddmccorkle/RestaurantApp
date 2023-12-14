@@ -11,6 +11,7 @@ struct AccountView: View {
     @State private var firstName = UserDefaults.standard.string(forKey: "first name key") ?? "First Name"
     @State private var lastName = UserDefaults.standard.string(forKey: "last name key") ?? "Last Name"
     @State private var email = UserDefaults.standard.string(forKey: "email key") ?? "E-mail Address"
+    @State private var isLoggedIn = UserDefaults.standard.bool(forKey: "is logged in")
     let kIsLoggedIn = "is logged in"
     let kFirstName = "first name key"
     let kLastName = "last name key"
@@ -30,6 +31,7 @@ struct AccountView: View {
                         .weight(.black)
                         
                     )
+                    .foregroundColor(.accentBlack)
                 
                 Image(systemName: "person.crop.circle")
                     .resizable()

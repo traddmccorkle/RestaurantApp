@@ -14,6 +14,7 @@ struct RestaurantApp: App {
     var body: some Scene {
         WindowGroup {
             OnboardingView()
+                .environment(\.managedObjectContext, persistence.container.viewContext)
         }
     }
 }

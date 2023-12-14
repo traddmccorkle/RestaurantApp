@@ -23,7 +23,7 @@ struct OnboardingView: View {
                 NavigationLink(destination: HomeView(), isActive: $isLoggedIn) {
                     EmptyView()
                 }
-                Image("Logo")
+                HeaderView()
                 
                 HeroView()
                 
