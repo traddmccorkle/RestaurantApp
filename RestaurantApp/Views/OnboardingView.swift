@@ -72,7 +72,7 @@ struct OnboardingView: View {
                     }
                 }, label: {
                     Text("Register")
-                        .foregroundColor(.black)
+                        .foregroundColor(.accentBlack)
                 })
                 .padding(.top)
                 .tint(.accentYellow)

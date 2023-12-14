@@ -78,7 +78,7 @@ struct AccountView: View {
                 self.presentation.wrappedValue.dismiss()
             }, label: {
                 Text("Logout")
-                    .foregroundColor(.black)
+                    .foregroundColor(.accentBlack)
             })
             .padding(.top)
             .tint(.accentYellow)

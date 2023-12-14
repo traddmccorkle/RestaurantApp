@@ -12,86 +12,106 @@ struct MenuView: View {
     @Environment(\.managedObjectContext) private var viewContext
     var persistence = PersistenceController()
     @State private var searchText: String = ""
+    @State private var startersShown = true
+    @State private var mainsShown = true
+    @State private var dessertsShown = true
+    @State private var drinksShown = true
     
     var body: some View {
-        VStack(spacing: 0) {
-            Image("Logo")
+        NavigationView {
+            VStack(spacing: 0) {
+                Image("Logo")
+                    .padding(.bottom)
+                
+                HeroView()
+                    .padding(.bottom)
+                
+                HStack {
+                    Image(systemName: "magnifyingglass")
+                        .foregroundColor(.accentBlack)
+                    TextField("Search the menu", text: $searchText)
+                        .textFieldStyle(.roundedBorder)
+                }
+                .frame(maxWidth: 350, alignment: .center)
                 .padding(.bottom)
-            
-            HeroView()
-            
-            FetchedObjects(
-                predicate:buildPredicate(),
-                sortDescriptors: buildSortDescriptors()) {
-                (dishes: [Dish]) in
-                List {
-                    HStack {
-                        Image(systemName: "magnifyingglass")
-                        TextField("Search the menu", text: $searchText)
-                            .textFieldStyle(.roundedBorder)
-                    }
-                    
-                    ForEach(dishes, id:\.self) { dish in
-                        HStack {
-                            VStack(alignment: .leading) {
-                                Text(dish.title ?? "")
-                                    .font(
-                                        .custom(
-                                            "Cochin",
-                                            fixedSize: 20)
-                                        .weight(.black)
-                                        
-                                    )
-                                Text(dish.summary ?? "")
-                                    .font(
-                                        .custom(
-                                            "Cochin",
-                                            fixedSize: 15)
-                                        
-                                    )
-                                    .foregroundColor(.accentGreen)
-                                Text("$\(dish.price ?? "")")
-                                    .font(
-                                        .custom(
-                                            "Cochin",
-                                            fixedSize: 20)
-                                        .weight(.black)
-                                        
-                                    )
-                                    .foregroundColor(.accentGreen)
-                            }
-                            Spacer()
-                            if let imageUrl = URL(string: dish.image ?? "") {
-                                AsyncImage(url: imageUrl) { image in
-                                    image.resizable()
-                                } placeholder: {
-                                    Color.gray
+                
+                HStack {
+                    Toggle("Starters", isOn: $startersShown)
+                    Toggle("Mains", isOn: $mainsShown)
+                    Toggle("Desserts", isOn: $dessertsShown)
+                    Toggle("Drinks", isOn: $drinksShown)
+                }
+                .frame(maxWidth: .infinity, alignment: .center)
+                .toggleStyle(littleLemonToggleStyle())
+                .padding(.bottom)
+                
+                FetchedObjects(
+                    predicate:buildPredicate(),
+                    sortDescriptors: buildSortDescriptors()) {
+                        (dishes: [Dish]) in
+                        List {
+                            ForEach(dishes, id:\.self) { dish in
+                                NavigationLink(destination: ItemDetailsView(dish: dish)) {
+                                    HStack {
+                                        VStack(alignment: .leading) {
+                                            Text(dish.title ?? "")
+                                                .font(
+                                                    .custom(
+                                                        "Cochin",
+                                                        fixedSize: 20)
+                                                    .weight(.black)
+                                                    
+                                                )
+                                            Text(dish.summary ?? "")
+                                                .font(
+                                                    .custom(
+                                                        "Cochin",
+                                                        fixedSize: 15)
+                                                    
+                                                )
+                                                .foregroundColor(.accentGreen)
+                                            Text("$\(dish.price ?? "")")
+                                                .font(
+                                                    .custom(
+                                                        "Cochin",
+                                                        fixedSize: 20)
+                                                    .weight(.black)
+                                                    
+                                                )
+                                                .foregroundColor(.accentGreen)
+                                        }
+                                        Spacer()
+                                        if let imageUrl = URL(string: dish.image ?? "") {
+                                            AsyncImage(url: imageUrl) { image in
+                                                image.resizable()
+                                            } placeholder: {
+                                                Color.gray
+                                            }
+                                            .frame(width: 50, height: 50)
+                                            .clipShape(RoundedRectangle(cornerRadius: 8))
+                                        }
+                                    }
                                 }
-                                .frame(width: 50, height: 50)
-                                .clipShape(RoundedRectangle(cornerRadius: 8))
                             }
                         }
+                        .listStyle(.plain)
                     }
-                }
             }
-        }
-        .task {
-            await reload(viewContext)
+            .task {
+                await reload(viewContext)
+            }
         }
     }
     
-    func buildPredicate() -> NSPredicate {
-        let predicate: NSPredicate
+    func buildPredicate() -> NSCompoundPredicate {
+        let search = searchText == "" ? NSPredicate(value: true) : NSPredicate(format: "title CONTAINS[cd] %@", searchText)
+        let starters = !startersShown ? NSPredicate(format: "category != %@", "starters") : NSPredicate(value: true)
+        let mains = !mainsShown ? NSPredicate(format: "category != %@", "mains") : NSPredicate(value: true)
+        let desserts = !dessertsShown ? NSPredicate(format: "category != %@", "desserts") : NSPredicate(value: true)
+        let drinks = !drinksShown ? NSPredicate(format: "category != %@", "drinks") : NSPredicate(value: true)
         
-        if searchText.isEmpty {
-            print("searchText isEmpty")
-            predicate = NSPredicate(value: true) // Return all entries if searchText is empty
-        } else {
-            print("searchText !isEmpty")
-            predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchText)
-        }
-        
-        return predicate
+        let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [search, starters, mains, desserts, drinks])
+        return compoundPredicate
     }
     
     func buildSortDescriptors() -> [NSSortDescriptor] {
@@ -123,10 +143,10 @@ struct MenuView: View {
             try? viewContext.save()
             
             // populate Core Data
-//            Dish.deleteAll(coreDataContext)
-//            Dish.createDishesFrom(menuItems:menuItems, coreDataContext)
+            //            Dish.deleteAll(coreDataContext)
+            //            Dish.createDishesFrom(menuItems:menuItems, coreDataContext)
         }
-        catch { 
+        catch {
             print(error)
         }
     }

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct HeroView: View {
+    @State private var searchText: String = ""
+    
     var body: some View {
         VStack {
             HStack {
