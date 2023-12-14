@@ -23,16 +23,21 @@ struct MenuView: View {
                 Image("Logo")
                     .padding(.bottom)
                 
-                HeroView()
-                    .padding(.bottom)
-                
-                HStack {
-                    Image(systemName: "magnifyingglass")
-                        .foregroundColor(.accentBlack)
-                    TextField("Search the menu", text: $searchText)
-                        .textFieldStyle(.roundedBorder)
+                VStack() {
+                    HeroView()
+                    
+                    HStack {
+                        Image(systemName: "magnifyingglass.circle.fill")
+                            .resizable()
+                            .foregroundColor(.accentWhite)
+                            .frame(maxWidth: 33, maxHeight: 33)
+                        TextField("Search the menu", text: $searchText)
+                            .textFieldStyle(.roundedBorder)
+                            .foregroundColor(.accentGreen)
+                    }
+                    .padding([.bottom, .leading, .trailing])
                 }
-                .frame(maxWidth: 350, alignment: .center)
+                .background(Color.accentGreen)
                 .padding(.bottom)
                 
                 HStack {
@@ -69,6 +74,7 @@ struct MenuView: View {
                                                         fixedSize: 15)
                                                     
                                                 )
+                                                .lineLimit(2)
                                                 .foregroundColor(.accentGreen)
                                             Text("$\(dish.price ?? "")")
                                                 .font(

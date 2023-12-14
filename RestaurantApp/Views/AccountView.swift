@@ -67,7 +67,7 @@ struct AccountView: View {
                             }
                         }
                 }
-                .foregroundColor(.secondary)
+                .foregroundColor(.accentGreen)
                 .frame(maxWidth: 350)
                 .textFieldStyle(.roundedBorder)
                 

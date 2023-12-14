@@ -42,7 +42,7 @@ struct OnboardingView: View {
                         .frame(maxWidth: .infinity, alignment: .leading)
                     TextField(email, text: $email)
                 }
-                .foregroundColor(.secondary)
+                .foregroundColor(.accentGreen)
                 .frame(maxWidth: 350)
                 .textFieldStyle(.roundedBorder)
                 .padding(.top)
