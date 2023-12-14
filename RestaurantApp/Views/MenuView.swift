@@ -6,11 +6,11 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct MenuView: View {
     @Environment(\.managedObjectContext) private var viewContext
     var persistence = PersistenceController()
-    @State private var location: String = ""
     @State private var searchText: String = ""
     
     var body: some View {
@@ -26,6 +26,15 @@ struct MenuView: View {
                 List {
                     ForEach(dishes, id:\.self) { dish in
                         HStack {
+                            VStack(alignment: .leading) {
+                                Text(dish.title ?? "")
+                                Text(dish.summary ?? "")
+                                    .font(.caption)
+                                    .foregroundColor(.accentGreen)
+                                Text("$\(dish.price ?? "")")
+                                    .foregroundColor(.accentGreen)
+                            }
+                            Spacer()
                             if let imageUrl = URL(string: dish.image ?? "") {
                                 AsyncImage(url: imageUrl) { image in
                                     image.resizable()
@@ -35,19 +44,15 @@ struct MenuView: View {
                                 .frame(width: 50, height: 50)
                                 .clipShape(RoundedRectangle(cornerRadius: 8))
                             }
-                            Text(dish.title ?? "")
-                            Spacer()
-                            Text("$\(dish.price ?? "")")
                         }
                     }
                 }
                 .searchable(text: $searchText, prompt: "Search menu") // Search bar linked to searchText
             }
         }
-        .onAppear(perform: {
-            print("fetching menu data")
-            getMenuData()
-        })
+        .task {
+            await reload(viewContext)
+        }
     }
     
     func buildPredicate() -> NSPredicate {
@@ -70,53 +75,35 @@ struct MenuView: View {
                                    selector: #selector(NSString.localizedCompare))]
     }
     
-//    func reload(_ coreDataContext:NSManagedObjectContext) async {
-//        let url = URL(string: "https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json")!
-//        let urlSession = URLSession.shared
-//        
-//        do {
-//            let (data, _) = try await urlSession.data(from: url)
-//            let fullMenu = try JSONDecoder().decode(MenuList.self, from: data)
-//            let menuItems = fullMenu.menu
-//        }
-//        catch { }
-//    }
-    
-    func getMenuData() {
-        let urlString = "https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json"
-        let url = URL(string: urlString)!
-        let request = URLRequest(url: url)
+    func reload(_ coreDataContext:NSManagedObjectContext) async {
+        let url = URL(string: "https://raw.githubusercontent.com/Meta-Mobile-Developer-PC/Working-With-Data-API/main/menu.json")!
+        let urlSession = URLSession.shared
         
         // Clears existing Dish data before fetching and storing new data
         persistence.clear()
         
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                print("Error fetching data: \(error)")
-                return
+        do {
+            let (data, _) = try await urlSession.data(from: url)
+            print("Attempting to decode JSON response...")
+            let fullMenu = try JSONDecoder().decode(MenuList.self, from: data)
+            fullMenu.menu.forEach { menuItem in
+                let dish = Dish(context: viewContext)
+                dish.title = menuItem.title
+                dish.price = menuItem.price
+                dish.image = menuItem.image
+                dish.summary = menuItem.description
+                dish.category = menuItem.category
+                
             }
-            if let httpResponse = response as? HTTPURLResponse, !(200...299).contains(httpResponse.statusCode) {
-                print("Server error with status code: \(httpResponse.statusCode)")
-                return
-            }
-            if let data = data {
-                let JSONDecoder = JSONDecoder()
-                if let menuItems = try? JSONDecoder.decode(MenuList.self, from: data) {
-                    print("data received")
-                    DispatchQueue.main.async {
-                        menuItems.menu.forEach { menuItem in
-                            let dish = Dish(context: viewContext)
-                            dish.title = menuItem.title
-                            dish.price = menuItem.price
-                            dish.image = menuItem.image
-                        }
-                        try? viewContext.save()
-                    }
-                }
-            }
+            try? viewContext.save()
+            
+            // populate Core Data
+//            Dish.deleteAll(coreDataContext)
+//            Dish.createDishesFrom(menuItems:menuItems, coreDataContext)
         }
-        
-        task.resume()
+        catch { 
+            print(error)
+        }
     }
 }
 

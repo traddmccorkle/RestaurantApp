@@ -9,6 +9,8 @@ import Foundation
 
 struct MenuItem: Decodable {
     var title: String
+    var description: String
     var image: String
     var price: String
+    var category: String
 }
