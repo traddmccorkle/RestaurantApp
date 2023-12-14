@@ -13,28 +13,48 @@ struct HeroView: View {
             HStack {
                 VStack {
                     Text("Litttle Lemon")
-                        .font(.largeTitle)
+                        .font(
+                            .custom(
+                                "Cochin",
+                                fixedSize: 35)
+                            .weight(.black)
+                            
+                        )
                         .foregroundColor(.accentYellow)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.top)
                     Text("Chicago")
-                        .font(.title)
-                        .foregroundColor(.white)
+                        .font(
+                            .custom(
+                                "Cochin",
+                                fixedSize: 25)
+                            .weight(.black)
+                            
+                        )
+                        .foregroundColor(.accentWhite)
                         .frame(maxWidth: .infinity, alignment: .leading)
-                        .padding(.bottom, 5)
+                        Spacer()
                     Text("We are a family owned Mediterranean restaurant, focused on traditional recipes served with a modern twist.")
-                        .foregroundColor(.white)
+                        .font(
+                            .custom(
+                                "Cochin",
+                                fixedSize: 16)
+                            
+                        )
+                        .foregroundColor(.accentWhite)
                         .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.bottom)
+                    Spacer()
                 }
                 .padding(.leading)
                 Image("Hero image")
                     .resizable()
-                    .cornerRadius(10)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .frame(width: 125, height: 125)
                     .padding(.trailing)
-                    .frame(maxWidth:125, maxHeight:125)
             }
-            .frame(maxWidth: .infinity, maxHeight: 200)
+            .frame(maxWidth: .infinity, maxHeight: 220)
             .background(Color.accentGreen)
-            .padding(.bottom)
         }
     }
 }

@@ -15,20 +15,15 @@ struct MenuView: View {
     
     var body: some View {
         VStack {
-            ZStack {
-                Image("Logo")
-                Image("Profile")
-//                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .resizable()
-                    .frame(maxWidth: 50, maxHeight: 50)
-                    .frame(maxWidth: .infinity, alignment: .trailing)
-                    .padding(.trailing)
-            }
+            Image("Logo")
             
             HeroView()
             
-            TextField("Search menu", text: $searchText)
-                .frame(maxWidth: 350)
+            HStack {
+                Image(systemName: "magnifyingglass")
+                TextField("Search the menu", text: $searchText)
+            }
+            .frame(maxWidth: 350)
             
             FetchedObjects(
                 predicate:buildPredicate(),
@@ -39,11 +34,28 @@ struct MenuView: View {
                         HStack {
                             VStack(alignment: .leading) {
                                 Text(dish.title ?? "")
+                                    .font(
+                                        .custom(
+                                            "Cochin",
+                                            fixedSize: 20)
+                                        .weight(.black)
+                                        
+                                    )
                                 Text(dish.summary ?? "")
-                                    .font(.caption)
+                                    .font(
+                                        .custom(
+                                            "Cochin",
+                                            fixedSize: 15)
+                                        
+                                    )
                                     .foregroundColor(.accentGreen)
                                 Text("$\(dish.price ?? "")")
-                                    .foregroundColor(.accentGreen)
+                                    .font(
+                                        .custom(
+                                            "Cochin",
+                                            fixedSize: 15)
+                                        
+                                    )
                             }
                             Spacer()
                             if let imageUrl = URL(string: dish.image ?? "") {

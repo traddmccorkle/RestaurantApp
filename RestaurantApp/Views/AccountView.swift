@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct UserProfileView: View {
+struct AccountView: View {
     @State private var firstName = UserDefaults.standard.string(forKey: "first name key") ?? "First Name"
     @State private var lastName = UserDefaults.standard.string(forKey: "last name key") ?? "Last Name"
     @State private var email = UserDefaults.standard.string(forKey: "email key") ?? "E-mail Address"
@@ -21,13 +21,19 @@ struct UserProfileView: View {
     var body: some View {
         VStack {
             Image("Logo")
-            
             VStack {
-                Text("Personal Information")
-                    .font(.headline)
+                Text("Account Information")
+                    .font(
+                        .custom(
+                            "Cochin",
+                            fixedSize: 30)
+                        .weight(.black)
+                        
+                    )
                 
-                Image("Profile")
+                Image(systemName: "person.crop.circle")
                     .resizable()
+                    .foregroundColor(.accentGreen)
                     .frame(maxWidth: 100, maxHeight: 100)
                 
                 VStack {
@@ -72,10 +78,10 @@ struct UserProfileView: View {
                 self.presentation.wrappedValue.dismiss()
             }, label: {
                 Text("Logout")
+                    .foregroundColor(.black)
             })
             .padding(.top)
-            .tint(.accentGreen)
-            .shadow(radius: 3)
+            .tint(.accentYellow)
             .buttonStyle(.borderedProminent)
             
             Spacer()
@@ -94,5 +100,5 @@ struct UserProfileView: View {
 }
 
 #Preview {
-    UserProfileView()
+    AccountView()
 }

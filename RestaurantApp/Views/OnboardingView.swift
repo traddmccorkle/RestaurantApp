@@ -45,6 +45,7 @@ struct OnboardingView: View {
                 .foregroundColor(.secondary)
                 .frame(maxWidth: 350)
                 .textFieldStyle(.roundedBorder)
+                .padding(.top)
                 
                 // registration button that validates form entries 
                 Button(action: {
@@ -71,10 +72,10 @@ struct OnboardingView: View {
                     }
                 }, label: {
                     Text("Register")
+                        .foregroundColor(.black)
                 })
                 .padding(.top)
-                .tint(.accentGreen)
-                .shadow(radius: 3)
+                .tint(.accentYellow)
                 .buttonStyle(.borderedProminent)
                 // add an alert if any fields aren't handled correctly
                 

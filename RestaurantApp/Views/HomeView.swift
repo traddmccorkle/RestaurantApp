@@ -15,12 +15,12 @@ struct HomeView: View {
             MenuView(persistence: persistence)
                 .environment(\.managedObjectContext, persistence.container.viewContext)
                 .tabItem {
-                    Label("Menu", systemImage: "list.dash" )
+                    Label("Menu", systemImage: "menucard" )
                 }
             
-            UserProfileView()
+            AccountView()
                 .tabItem {
-                    Label("Profile", systemImage: "square.and.pencil" )
+                    Label("Account", systemImage: "person.crop.circle" )
                 }
         }
         .navigationBarBackButtonHidden(true)
