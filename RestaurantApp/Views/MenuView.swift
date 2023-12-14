@@ -15,9 +15,20 @@ struct MenuView: View {
     
     var body: some View {
         VStack {
-            Image("Logo")
+            ZStack {
+                Image("Logo")
+                Image("Profile")
+//                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .resizable()
+                    .frame(maxWidth: 50, maxHeight: 50)
+                    .frame(maxWidth: .infinity, alignment: .trailing)
+                    .padding(.trailing)
+            }
             
-            Text("Chicago")
+            HeroView()
+            
+            TextField("Search menu", text: $searchText)
+                .frame(maxWidth: 350)
             
             FetchedObjects(
                 predicate:buildPredicate(),
@@ -47,7 +58,6 @@ struct MenuView: View {
                         }
                     }
                 }
-                .searchable(text: $searchText, prompt: "Search menu") // Search bar linked to searchText
             }
         }
         .task {
