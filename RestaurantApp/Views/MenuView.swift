@@ -53,9 +53,11 @@ struct MenuView: View {
                                     .font(
                                         .custom(
                                             "Cochin",
-                                            fixedSize: 15)
+                                            fixedSize: 20)
+                                        .weight(.black)
                                         
                                     )
+                                    .foregroundColor(.accentGreen)
                             }
                             Spacer()
                             if let imageUrl = URL(string: dish.image ?? "") {
