@@ -26,27 +26,31 @@ struct ItemDetailsView: View {
             }
             
             VStack {
-                Text(dish.title ?? "")
-                    .font(
-                        .custom(
-                            "Cochin",
-                            fixedSize: 35)
-                        .weight(.black)
-                        
-                    )
-                    .foregroundColor(.accentGreen)
+                HStack {
+                    Text(dish.title ?? "")
+                        .font(
+                            .custom(
+                                "Cochin",
+                                fixedSize: 35)
+                            .weight(.black)
+                            
+                        )
+                        .foregroundColor(.accentGreen)
+                    
+                    Text("$\(dish.price ?? "")")
+                        .font(
+                            .custom(
+                                "Cochin",
+                                fixedSize: 35)
+                            .weight(.black)
+                            
+                        )
+                        .foregroundColor(.accentGreen)
+                    
+                    Spacer()
+                }
                 
                 Text(dish.summary ?? "")
-                    .font(
-                        .custom(
-                            "Cochin",
-                            fixedSize: 25)
-                        .weight(.black)
-                        
-                    )
-                    .foregroundColor(.accentBlack)
-                
-                Text("$\(dish.price ?? "")")
                     .font(
                         .custom(
                             "Cochin",
@@ -54,7 +58,7 @@ struct ItemDetailsView: View {
                         .weight(.black)
                         
                     )
-                    .foregroundColor(.accentGreen)
+                    .foregroundColor(.accentBlack)
             }
             .padding([.leading, .trailing])
             
