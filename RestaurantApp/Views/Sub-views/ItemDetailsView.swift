@@ -25,30 +25,16 @@ struct ItemDetailsView: View {
                 .frame(minHeight: 150)
             }
             
-            VStack {
-                HStack {
-                    Text(dish.title ?? "")
-                        .font(
-                            .custom(
-                                "Cochin",
-                                fixedSize: 35)
-                            .weight(.black)
-                            
-                        )
-                        .foregroundColor(.accentGreen)
-                    
-                    Text("$\(dish.price ?? "")")
-                        .font(
-                            .custom(
-                                "Cochin",
-                                fixedSize: 35)
-                            .weight(.black)
-                            
-                        )
-                        .foregroundColor(.accentGreen)
-                    
-                    Spacer()
-                }
+            VStack(alignment: .leading) {
+                Text(dish.title ?? "")
+                    .font(
+                        .custom(
+                            "Cochin",
+                            fixedSize: 35)
+                        .weight(.black)
+                        
+                    )
+                    .foregroundColor(.accentGreen)
                 
                 Text(dish.summary ?? "")
                     .font(
@@ -59,6 +45,16 @@ struct ItemDetailsView: View {
                         
                     )
                     .foregroundColor(.accentBlack)
+                
+                Text("$\(dish.price ?? "")")
+                    .font(
+                        .custom(
+                            "Cochin",
+                            fixedSize: 30)
+                        .weight(.black)
+                        
+                    )
+                    .foregroundColor(.accentGreen)
             }
             .padding([.leading, .trailing])
             

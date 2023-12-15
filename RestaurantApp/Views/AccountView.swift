@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct AccountView: View {
+    @Environment(\.presentationMode) var presentation
+    
     @State private var firstName = UserDefaults.standard.string(forKey: "first name key") ?? "First Name"
     @State private var lastName = UserDefaults.standard.string(forKey: "last name key") ?? "Last Name"
     @State private var email = UserDefaults.standard.string(forKey: "email key") ?? "E-mail Address"
@@ -17,22 +19,9 @@ struct AccountView: View {
     let kLastName = "last name key"
     let kEmail = "email key"
     
-    @Environment(\.presentationMode) var presentation
-    
     var body: some View {
         VStack {
-            Image("Logo")
             VStack {
-                Text("Account Information")
-                    .font(
-                        .custom(
-                            "Cochin",
-                            fixedSize: 30)
-                        .weight(.black)
-                        
-                    )
-                    .foregroundColor(.accentBlack)
-                
                 Image(systemName: "person.crop.circle")
                     .resizable()
                     .foregroundColor(.accentGreen)
@@ -70,7 +59,7 @@ struct AccountView: View {
                         }
                 }
                 .foregroundColor(.accentGreen)
-                .frame(maxWidth: 350)
+                .padding([.leading, .trailing])
                 .textFieldStyle(.roundedBorder)
                 
             }
@@ -88,6 +77,7 @@ struct AccountView: View {
             
             Spacer()
         }
+        .navigationTitle("Account Information")
     }
     
     private func isValidEmail(_ email: String) -> Bool {
