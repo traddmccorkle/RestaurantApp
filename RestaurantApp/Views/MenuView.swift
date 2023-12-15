@@ -21,7 +21,7 @@ struct MenuView: View {
     var body: some View {
         NavigationStack() {
             VStack(spacing: 0) {
-                HeaderView()
+                Image("Logo")
                     .padding(.bottom)
                 
                 VStack() {

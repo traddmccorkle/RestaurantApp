@@ -22,7 +22,7 @@ struct AccountView: View {
     var body: some View {
         VStack {
             VStack {
-                Image(systemName: "person.crop.circle")
+                Image("Profile")
                     .resizable()
                     .foregroundColor(.accentGreen)
                     .frame(maxWidth: 100, maxHeight: 100)
